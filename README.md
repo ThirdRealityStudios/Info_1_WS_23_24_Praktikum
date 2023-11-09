@@ -1,5 +1,7 @@
 # Info 1, WS 23/24, Praktikum
 
+## Termin 2
+
 Quelltext für das Praktikum von Info 1.
 Alle Termine sollen hier vertreten sein,
 wobei jeder Termin seinen eigenen Branch haben wird,
