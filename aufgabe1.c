@@ -12,7 +12,7 @@ int isLeapYear(int year)
 
     // Jedes 400. Jahr ist ein Schaltjahr sowie alle Jahre,
     // die sich durch 4 teilen lassen (außer jedes 100. Jahr).
-    return isMulitpleOf400 || isMultipleOf4 && !isSecularYear;
+    return isMulitpleOf400 || (isMultipleOf4 && !isSecularYear);
 }
 
 /// @brief Sagt, ob das angegebene Datum gültig ist (zu Aufgabe 1 b).
