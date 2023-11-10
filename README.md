@@ -11,6 +11,10 @@
 5. es gibt daher m.E. keine signifikanten Vor- und Nachteile, da beide Konzepte einfach für unterschiedliche Situationen besser passen (wie bereits erwähnt in 1 und 2).
 6. der default-case ist durchaus vergleichbar mit dem else-Fall bei if-else-Abfragen.
 
+### *Nachtrag
+
+7. switch-case ist ausführungsoptimiert und schneller gegenüber if-else.
+
 Quelltext für das Praktikum von Info 1.
 Alle Termine sollen hier vertreten sein,
 wobei jeder Termin seinen eigenen Branch haben wird,
