@@ -1,6 +1,6 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 2, Nr. 4 - Rasterausgabe implementieren
+## Termin 2, Nr. 4 b) - Rasterausgabe implementieren
 
 ---
 
