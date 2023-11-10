@@ -1,6 +1,6 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 2
+## Termin 2, Nr. 1
 
 Quelltext für das Praktikum von Info 1.
 Alle Termine sollen hier vertreten sein,
