@@ -106,7 +106,7 @@ double floor(double toFloor)
 /// @param day Tag des Datums
 /// @param month Monat des Datums
 /// @param year Jahr des Datums
-/// @return Wochentag, wobei 0 = Samstag und 6 = Freitag usw. (zyklisch wiederholend).
+/// @return Wochentag, wobei 1 = Montag und 7 = Sonntag usw. (zyklisch wiederholend).
 int zellerAlgorithm(int day, int month, int year)
 {
     // Für Januar und Februar nur lt. Wikipedia.
@@ -128,7 +128,19 @@ int zellerAlgorithm(int day, int month, int year)
 
     h = operand1 + operand2 + operand3 + operand4 + operand5 - operand6;
 
-    return ((int) h + 1) % 7;
+    h = ((int) h + 1) % 7;
+
+    // s. Variable "d" bei:
+    // https://en.wikipedia.org/wiki/Zeller's_congruence#Formula
+    // Hiermit werden die Wochentage verschoben,
+    // sodass 0 nicht mehr Samstag ist und 6 ist Freitag.
+    // Stattdessen ist 1 jetzt Montag und 7 ist jetzt Sonntag.
+    // Somit sind die zurückgegebenen Werte jetzt für Normalos
+    // besser verständlich.
+    int d = (((int) h + 5) % 7) + 1;
+
+    // Jetzt wird der entsprechende Tag zurückgegeben.
+    return d;
 }
 
 void testZellerAlgorithm()
@@ -143,38 +155,36 @@ void testZellerAlgorithm()
 
 void printWeekday(int day, int month, int year)
 {
-    int zellerResult = zellerAlgorithm(day, month, year);
-
-    int weekday = zellerResult % 7;
+    int weekday = zellerAlgorithm(day, month, year);
 
     switch(weekday)
     {
-        case 0:
-            puts("Samstag");
-        break;
-
         case 1:
-            puts("Sonntag");
-        break;
-
-        case 2:
             puts("Montag");
         break;
 
-        case 3:
+        case 2:
             puts("Dienstag");
         break;
 
-        case 4:
+        case 3:
             puts("Mittwoch");
         break;
 
-        case 5:
+        case 4:
             puts("Donnerstag");
         break;
 
-        case 6:
+        case 5:
             puts("Freitag");
+        break;
+
+        case 6:
+            puts("Samstag");
+        break;
+
+        case 7:
+            puts("Sonntag");
         break;
 
         default:
@@ -283,6 +293,60 @@ void testPrintWeekday()
     puts("Expected: Mittwoch");
 
     puts("");
+}
+
+/// @brief Gibt den maximalen Tag eines Monats zurück.
+/// @param month Monat in einem bestimmten Jahr
+/// @param year Jahr
+/// @return Anzahl der Tage eines Monats in einem bestimmten Jahr.
+int maxDaysOfMonth(int month, int year)
+{
+    if(month % 2 == 0)
+    {
+        if(month == 2)
+        {
+            return isLeapYear(year) ? 29 : 28;
+        }
+
+        return month <= 7 ? 30 : 31;
+    }
+    else
+    {
+        return month <= 7 ? 31 : 30;
+    }
+}
+
+/// @brief Aufpassen, dass man den Speicher danach wieder freigibt!
+/// @return Raster für einen Monat nach Wochentagen geordnet.
+int** saveMonthByWeekday(int month, int year)
+{
+    int **grid = calloc(6, sizeof(int*));
+
+    for(int rows = 0; rows < 6; rows++)
+        grid[rows] = calloc(7, sizeof(int));
+
+    // int firstWeekdayInMonth = ;
+
+    for(int day = 1; day <= maxDaysOfMonth(month, year); day++)
+    {
+        
+    }
+
+    return grid;
+}
+
+/// @brief Druckt einen Monat aus von einem Jahr,
+///        formatiert nach den Wochentagen.
+/// @param month Monat
+/// @param year Jahr
+void printMonthGrid(int month, int year)
+{
+    if(!(month > 0 && month < 13 && year > 1969 && year < 2101))
+    {
+        return; // Print nothing if the given month and year is not supported or invalid.
+    }
+
+    // int **month = saveMonthByWeekday(month, year);
 }
 
 /// @brief Die Hauptfunktion
