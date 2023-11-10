@@ -7,6 +7,9 @@
 #define FRANCE 3
 #define CHINA 4
 
+#define HEIGHT 6 // Einfach immer 6 Zeilen, um das Monatsraster zu repräsentieren pauschal.
+#define WIDTH 7 // 7 Wochentage
+
 /// @brief Sagt, ob das Jahr ein Schaltjahr ist.
 /// @param year 
 /// @return 
@@ -107,7 +110,7 @@ double floor(double toFloor)
 /// @param month Monat des Datums
 /// @param year Jahr des Datums
 /// @return Wochentag, wobei 1 = Montag und 7 = Sonntag usw. (zyklisch wiederholend).
-int zellerAlgorithm(int day, int month, int year)
+int getWeekday(int day, int month, int year)
 {
     // Für Januar und Februar nur lt. Wikipedia.
     year = (month == 1 || month == 2) ? year - 1 : year;
@@ -143,53 +146,56 @@ int zellerAlgorithm(int day, int month, int year)
     return d;
 }
 
-void testZellerAlgorithm()
+void testGetWeekday()
 {
     puts("");
-    printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(1, 1, 2000), 1, 1, 2000);
-    printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(28, 2, 2022), 28, 2, 2022);
-    printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(28, 2, 2021), 28, 2, 2021);
-    printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(28, 2, 2020), 28, 2, 2020);
+    printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(1, 1, 2000), 1, 1, 2000);
+    printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(28, 2, 2022), 28, 2, 2022);
+    printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(28, 2, 2021), 28, 2, 2021);
+    printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(28, 2, 2020), 28, 2, 2020);
     puts("");
+}
+
+char* getWeekdayString(int weekday)
+{
+    switch(weekday)
+    {
+        case 1:
+            return "Montag";
+        break;
+
+        case 2:
+            return "Dienstag";
+        break;
+
+        case 3:
+            return "Mittwoch";
+        break;
+
+        case 4:
+            return "Donnerstag";
+        break;
+
+        case 5:
+            return "Freitag";
+        break;
+
+        case 6:
+            return "Samstag";
+        break;
+
+        case 7:
+            return "Sonntag";
+        break;
+
+        default:
+            return "Unbekannter Fehler (Wert ungueltig)";
+    }
 }
 
 void printWeekday(int day, int month, int year)
 {
-    int weekday = zellerAlgorithm(day, month, year);
-
-    switch(weekday)
-    {
-        case 1:
-            puts("Montag");
-        break;
-
-        case 2:
-            puts("Dienstag");
-        break;
-
-        case 3:
-            puts("Mittwoch");
-        break;
-
-        case 4:
-            puts("Donnerstag");
-        break;
-
-        case 5:
-            puts("Freitag");
-        break;
-
-        case 6:
-            puts("Samstag");
-        break;
-
-        case 7:
-            puts("Sonntag");
-        break;
-
-        default:
-            puts("Unbekannter Fehler (Wert ungueltig)");
-    }
+    printf("%s\n", getWeekdayString(getWeekday(day, month, year)));
 }
 
 void testPrintWeekday()
@@ -316,23 +322,112 @@ int maxDaysOfMonth(int month, int year)
     }
 }
 
+/// @brief Fügt einen Tag in die richtige Stelle im 2D-Array ein,
+///        abhängig davon,
+///        welcher Wochentag (1 = Montag bis 7 = Sonntag) dieser ist.
+///        Das bearbeitete 2D-Array (das per Parameter "grid" übergeben wurde) ergibt dann den
+///        jeweiligen Monat,
+///        den man auf der Konsole ausgeben möchte.
+/// @param grid Referenz auf Ihr 2D-Array, das Sie einfach übergeben.
+/// @param weekday Der Wochentag, z.B. "Montag", der für den übergebenen Tag gelten soll.
+/// @param day Der Tag aus dem jeweiligen Monat.
+void insertDay(int **grid, int weekday, int day)
+{
+    int y = (day - 1) / WIDTH;
+
+    int x = weekday - 1;
+
+    grid[y][x] = day;
+}
+
+/// @brief Erstellt ein mit Nullen alloziiertes 2D-Array anhand von WIDTH und HEIGHT.
+/// @return Alloziiertes 2D-Array.
+int** createArray()
+{
+    int **arr = calloc(HEIGHT, sizeof(int));
+
+    for(int i = 0; i < HEIGHT; i++)
+    {
+        arr[i] = calloc(WIDTH, sizeof(int));
+    }
+
+    return arr;
+}
+
 /// @brief Aufpassen, dass man den Speicher danach wieder freigibt!
 /// @return Raster für einen Monat nach Wochentagen geordnet.
-int** saveMonthByWeekday(int month, int year)
+int** getMonthArray(int month, int year)
 {
-    int **grid = calloc(6, sizeof(int*));
-
-    for(int rows = 0; rows < 6; rows++)
-        grid[rows] = calloc(7, sizeof(int));
-
-    // int firstWeekdayInMonth = ;
+    int **grid = createArray();
 
     for(int day = 1; day <= maxDaysOfMonth(month, year); day++)
     {
-        
+        insertDay(grid, getWeekday(day, month, year), day);
     }
 
     return grid;
+}
+
+/// @brief Gibt den Monat in geschriebener, natürlich-sprachiger Form zurück.
+/// @param month Monat im numerischen Format (1 bis 12).
+/// @return Monat als Zeichenkette, lesbar für alle Menschen.
+///         Falls ungültiger Monat angegeben, dann "Fehlermonat" als Rückgabe.
+char* getMonthString(int month)
+{
+    switch(month)
+    {
+        case 1:
+            return "Januar";
+        break;
+
+        case 2:
+            return "Februar";
+        break;
+            
+        case 3:
+            return "Maerz";
+        break;
+
+        case 4:
+            return "April";
+        break;
+
+        case 5:
+            return "Mai";
+        break;
+
+        case 6:
+            return "Juni";
+        break;
+
+        case 7:
+            return "Juli";
+        break;
+
+        case 8:
+            return "August";
+        break;
+
+        case 9:
+            return "September";
+        break;
+
+        case 10:
+            return "Oktober";
+        break;
+
+        case 11:
+            return "November";
+        break;
+
+        case 12:
+            return "Dezember";
+        break;
+        
+        default:
+            return "Fehlermonat";
+        break;
+    }
 }
 
 /// @brief Druckt einen Monat aus von einem Jahr,
@@ -346,7 +441,51 @@ void printMonthGrid(int month, int year)
         return; // Print nothing if the given month and year is not supported or invalid.
     }
 
-    // int **month = saveMonthByWeekday(month, year);
+    // Den Monat und Jahr ausgeben oberhalb des Kalendermonats.
+    printf("%s %04d\n", getMonthString(month), year);
+
+    int **monthArray = getMonthArray(month, year);
+
+    int monthDayWidth = 4;
+
+    for(int weekday = 1; weekday <= 7; weekday++)
+    {
+        char *weekdayString = getWeekdayString(weekday);
+
+        // Nur die ersten beiden Zeichen merken vom Wochentag zur Ausgabe,
+        // aber wichtig hier: in sind ALLE Strings immer NULL-terminiert,
+        // daher brauche ich das Zeichen '\0' noch am Ende (=> insgesamt 3 Zeichen benötigt zum Speichern).
+        char weekdayShortenedString[3] = {weekdayString[0], weekdayString[1], '\0'};
+
+        printf("%*s", monthDayWidth, weekdayShortenedString);
+    }
+
+    puts("");
+
+    for(int y = 0; y < HEIGHT; y++)
+    {
+        for(int x = 0; x < WIDTH; x++)
+        {
+            int day = monthArray[y][x];
+
+            if(day > 0)
+            {
+                printf("%*d", monthDayWidth, day);
+            }
+            else
+            {
+                printf("%*s", monthDayWidth, "");
+            }
+        }
+
+        puts("");
+    }
+}
+
+void testPrintMonthGrid()
+{
+    printMonthGrid(11, 2023);
+    puts("");
 }
 
 /// @brief Die Hauptfunktion
@@ -359,7 +498,8 @@ int main(int argc, char **argv)
 
     int countryCode = USA;
 
-    testZellerAlgorithm();
+    testPrintMonthGrid();
+    testGetWeekday();
     testPrintWeekday();
 
     do
