@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define GERMANY 0
+#define SPAIN 1
+#define USA 2
+#define FRANCE 3
+#define CHINA 4
+
 /// @brief Sagt, ob das Jahr ein Schaltjahr ist.
 /// @param year 
 /// @return 
@@ -50,6 +56,43 @@ int isDateValid(int day, int month, int year)
     return 0;
 }
 
+/// @brief Druckt das Datum in einem bestimmten Länderformat aus (Aufgabe 2).
+/// @param day Der Tag
+/// @param month Der Monat
+/// @param year Das Jahr
+/// @param countryCode Der Ländercode
+void printDate(int day, int month, int year, int countryCode)
+{
+    switch(countryCode)
+    {
+        case GERMANY:
+            printf("%02d.%02d.%04d", day, month, year);
+        break;
+
+        case SPAIN:
+            printf("%02d/%02d/%04d", day, month, year);
+        break;
+
+        case USA:
+            printf("%02d-%02d-%04d", month, day, year);
+        break;
+
+        case FRANCE:
+            printf("%02d/%02d/%04d", day, month, year);
+        break;
+
+        case CHINA:
+            printf("%04d-%02d-%02d", year, month, day);
+        break;
+
+        default:
+
+        printDate(USA, day, month, year);
+    }
+
+    puts("");
+}
+
 /// @brief Die Hauptfunktion
 /// @param argc Anzahl der Parameter auf der Konsole, inkl. Programmname selber.
 /// @param argv Zeichenketten, die eingegeben wurden.
@@ -57,6 +100,8 @@ int isDateValid(int day, int month, int year)
 int main(int argc, char **argv)
 {
     int day = 0, month = 0, year = 0;
+
+    int countryCode = USA;
 
     do
     {
@@ -97,11 +142,13 @@ int main(int argc, char **argv)
         }
     }
     while(!isDateValid(day, month, year));
-    
-    printf("Sie haben eingegeben: %02d.%02d.%04d\n", day, month, year);
+
+    puts("Geben Sie einen Ländercode ein (0 bis 4):");
+    scanf("%d", &countryCode);
+
+    printDate(day, month, year, countryCode);
 
     puts("Programm beendet.");
 
     return EXIT_SUCCESS;
 }
-
