@@ -63,32 +63,18 @@ int isDateValid(int day, int month, int year)
 /// @param countryCode Der Ländercode
 void printDate(int day, int month, int year, int countryCode)
 {
-    switch(countryCode)
-    {
-        case GERMANY:
-            printf("%02d.%02d.%04d", day, month, year);
-        break;
-
-        case SPAIN:
-            printf("%02d/%02d/%04d", day, month, year);
-        break;
-
-        case USA:
-            printf("%02d-%02d-%04d", month, day, year);
-        break;
-
-        case FRANCE:
-            printf("%02d/%02d/%04d", day, month, year);
-        break;
-
-        case CHINA:
-            printf("%04d-%02d-%02d", year, month, day);
-        break;
-
-        default:
-
+    if(countryCode == GERMANY)
+        printf("%02d.%02d.%04d", day, month, year);
+    else if(countryCode == SPAIN)
+        printf("%02d/%02d/%04d", day, month, year);
+    else if(countryCode == USA)
+        printf("%02d-%02d-%04d", month, day, year);
+    else if(countryCode == FRANCE)
+        printf("%02d/%02d/%04d", day, month, year);
+    else if(countryCode == CHINA)
+        printf("%04d-%02d-%02d", year, month, day);
+    else
         printDate(USA, day, month, year);
-    }
 
     puts("");
 }
