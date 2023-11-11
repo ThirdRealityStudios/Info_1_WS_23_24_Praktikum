@@ -557,6 +557,233 @@ void testPrintMonthGrid()
     puts("");
 }
 
+/// @brief Gibt einen alloziierten, NULL-terminierten String wieder frei.
+///        Achtung! Der String MUSS NULL-terminiert sein.
+///        Ansonsten läuft freeString(..) in eine Endlosschleife..
+/// @param string String, der wieder freigegeben werden soll.
+void freeString(char *string)
+{
+    while(*string != '\0')
+    {
+        free(string++);
+    }
+
+    // NULL-Byte auch freigeben.
+    free(string);
+}
+
+/// @brief Bestimmt die Länge eines NULL-terminierten Strings.
+///        Das NULL-Byte wird hier NICHT mitgezählt für die Länge des Strings.
+///        Obacht! Wenn der übergebene String nicht NULL-terminiert ist,
+///        dann wird diese Funktion in eine Endlosschleife laufen!
+/// @param string NULL-terminierter String
+/// @return Länge dieses Strings.
+int stringLength(char *string)
+{
+    int length = 0;
+
+    // while(*string) ist das Gleiche wie while(*string != '\0').
+    while(*string)
+    {
+        length++;
+
+        string++; // Bugfix: vergessen zu inkrementieren (= Endlosschleife).
+    }
+
+    return length;
+}
+
+/// @brief Spiegelt einen String.
+///        Achtung! Der zurückgebene String muss später auch wieder freigegeben werden mit freeString(..).
+///        Außerdem ist der zurückgegebene String NULL-terminiert.
+/// @param string Der String, der gespielgelt werden soll.
+/// @return Ein komplett neuer String, aber gespiegelt (übergebener Parameter bleibt unverändert).
+char* mirrorString(char *string)
+{
+    int stringLengthValue = stringLength(string);
+
+    int newStringAllocationLength = stringLengthValue + 1;
+
+    // stringLength(string) + 1 wegen NULL-Byte am Ende.
+    // Das NULL-Byte muss aber wegen der Funktionsweise von calloc(..) nicht explizit gesetzt werden.
+    char *mirroredString = calloc((size_t) newStringAllocationLength, sizeof(char));
+
+    for(int i = 0; i < stringLengthValue; i++)
+    {
+        mirroredString[i] = string[stringLengthValue - i - 1]; // "- 1" wegen dem NULL-Byte, das ich nicht möchte an die erste Stelle.
+    }
+
+    return mirroredString;
+}
+
+/// @brief Wandelt eine Zahl in ihre String-Repräsentation um,
+///        wobei diese Zahl aufgefüllt werden kann mit Nullen (per width).
+///        Verwendet das Division-Modulo-Verfahren zur Basis 10 zur Umwandlung und Bestimmung der einzelnen Ziffern.
+///        Achtung! Der zurückgegebene String muss später wieder per freeString(..) freigegeben werden,
+///        falls er nicht mehr gebraucht wird.
+/// @param num Zahl zum Konvertieren in einen String.
+/// @return String-Repräsentation der Zahl.
+char* toString(int num)
+{
+    char *digitString = NULL, *digitStringPos = NULL;
+
+    int remainder = 0,
+        quotient = 0;
+
+    int stringLength = 0;
+
+    do
+    {
+        // Für jede berechnete Ziffer soll die Anzahl
+        // der Zeichenketten-Symbole um 1 (s. ++stringLength) wachsen.
+        digitString = realloc(digitString, (size_t) (++stringLength));
+
+        // Division-Modulo-Verfahren zur Bestimmung der 10er-Basis-Ziffer.
+        remainder = num % 10;
+        quotient = num / 10;
+
+        // Die Schreibposition immer auf das letzte Zeichen setzen
+        // in der Zeichenkette,
+        // um die neue ermittelte Ziffer dort zu speichern.
+        digitStringPos = digitString + stringLength - 1;
+
+        *digitStringPos = (char) ('0' + remainder); // Die errechnete Ziffer in der Zeichenkette speichern (führend links).
+
+        num = quotient;
+    }
+    while(quotient != 0);
+
+    // Noch eine letzte Erweiterung des Strings,
+    // um das NULL-Byte zu speichern.
+    digitString = realloc(digitString, (size_t) (++stringLength));
+
+    // Die Schreibposition wieder auf das letzte Zeichen setzen.
+    digitStringPos = digitString + stringLength - sizeof(char);
+
+    // NULL-Byte speichern.
+    *digitStringPos = '\0';
+
+    // Jetzt den String noch spiegeln,
+    // da man auf dem Blatt Papier die ermittelte Zahl
+    // auch von unten nach oben aufschreiben muss.
+    // Dies ist hier also analog einfach das Spiegeln des Strings,
+    // damit er später richtig angezeigt wird als Zahl.
+    char *mirroredString = mirrorString(digitString);
+
+    freeString(digitString);
+
+    return mirroredString;
+}
+
+/// @brief Sagt, ob ein Datum ein Palindrom ist (1, wenn wahr, ansonsten 0)
+/// @param day Tag
+/// @param month Monat
+/// @param year Jahr
+/// @return 1, wenn das Datum ein Palindrom ist, ansonsten 0.
+int isPalindrom(int day, int month, int year)
+{
+    return 0;
+}
+
+void testIsPalindrom()
+{
+    int day = 1, month = 1, year = 2023, result = 0;
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 22, month = 02, year = 2022;
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+}
+
+void testToString()
+{
+    int num = 0;
+    char *numString = NULL;
+
+    puts("testToString()");
+
+    puts("");
+
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 1;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 2;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 3;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 9;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 10;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 11;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 12;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 98;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 99;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 100;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 101;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+
+    num = 102;
+    numString = toString(num);
+    printf("Integer: %d, String-Zahl: %s\n", num, numString);
+    freeString(numString);
+}
+
 /// @brief Die Hauptfunktion
 /// @param argc Anzahl der Parameter auf der Konsole, inkl. Programmname selber.
 /// @param argv Zeichenketten, die eingegeben wurden.
@@ -567,9 +794,12 @@ int main(int argc, char **argv)
 
     int countryCode = USA;
 
+    testToString(); // Nicht gefordert vom Praktikum, aber ich mache zur Sicherheit, da es eine wichtige Hilfsfunktion ist.
     testPrintMonthGrid();
     testGetWeekday();
     testPrintWeekday();
+
+    testIsPalindrom();
 
     do
     {
