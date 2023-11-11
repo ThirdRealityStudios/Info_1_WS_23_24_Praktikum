@@ -517,6 +517,44 @@ void testPrintMonthGrid()
 {
     printMonthGrid(11, 2023);
     puts("");
+    printMonthGrid(10, 2023);
+    puts("");
+    printMonthGrid(9, 2023);
+    puts("");
+    printMonthGrid(2, 2023);
+    puts("");
+    printMonthGrid(11, 2022);
+    puts("");
+    printMonthGrid(10, 2022);
+    puts("");
+    printMonthGrid(9, 2022);
+    puts("");
+    printMonthGrid(2, 2022);
+    puts("");
+    printMonthGrid(11, 2021);
+    puts("");
+    printMonthGrid(10, 2021);
+    puts("");
+    printMonthGrid(9, 2021);
+    puts("");
+    printMonthGrid(2, 2021);
+    puts("");
+    printMonthGrid(11, 2020);
+    puts("");
+    printMonthGrid(10, 2020);
+    puts("");
+    printMonthGrid(9, 2020);
+    puts("");
+    printMonthGrid(2, 2020);
+    puts("");
+    printMonthGrid(11, 2019);
+    puts("");
+    printMonthGrid(10, 2019);
+    puts("");
+    printMonthGrid(9, 2019);
+    puts("");
+    printMonthGrid(2, 2019);
+    puts("");
 }
 
 /// @brief Die Hauptfunktion
