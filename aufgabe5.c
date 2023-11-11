@@ -675,6 +675,46 @@ char* toString(int num)
     return mirroredString;
 }
 
+/// @brief Einen String linksseitig auffüllen mit Symbolen.
+///        Achtung! Den zurückgegebenen String später auch wieder freigeben per freeString(..),
+///        da dieser extra alloziiert wurde.
+///        Der übergebene String bleibt unverändert.
+///        Außerdem darauf achten,
+///        dass der übergebene String NULL-terminiert ist!
+///        Ansonsten läuft diese Funktion in eine Endlosschleife!
+/// @param string Der String
+/// @param newLength Länge des neuen Strings (muss größer sein als der übergebene String!).
+/// @param symbol Das Symbol zum Auffüllen, z.B. '0' (hilfreich für mehrstellige Zahlen).
+/// @return Ein neu alloziierter, aufgefüllter String oder NULL, wenn ungültige Parameter vorhanden sind.
+char* fillString(char *string, int newLength, char symbol)
+{
+    if(newLength <= stringLength(string))
+    {
+        return NULL;
+    }
+
+    char *filledString = calloc(newLength, sizeof(char));
+
+    int symbolArea = newLength - stringLength(string);
+
+    for(int i = 0; i < newLength; i++)
+    {
+        if(i < symbolArea)
+        {
+            // Mit Symbolen linksbündig auffüllen,
+            // die über den Parameter "symbol" beschrieben werden.
+            filledString[i] = symbol;
+        }
+        else
+        {
+            // Hier einfach den alten String kopieren.
+            filledString[i] = string[i - symbolArea];
+        }
+    }
+
+    return filledString;
+}
+
 /// @brief Sagt, ob ein Datum ein Palindrom ist (1, wenn wahr, ansonsten 0)
 /// @param day Tag
 /// @param month Monat
@@ -708,6 +748,27 @@ void testIsPalindrom()
 
     result = isPalindrom(day, month, year);
     printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+}
+
+void testFillString()
+{
+    char *filledString = fillString("a", 2, '0');
+
+    puts("testFillString()");
+    puts("");
+    printf("%s\n", filledString);
+    freeString(filledString);
+
+    filledString = fillString("a", 3, '0');
+    puts("");
+    printf("%s\n", filledString);
+    freeString(filledString);
+
+    filledString = fillString("ab", 7, 'x');
+    puts("");
+    printf("%s\n", filledString);
+    freeString(filledString);
+    puts("");
 }
 
 void testToString()
@@ -794,6 +855,7 @@ int main(int argc, char **argv)
 
     int countryCode = USA;
 
+    testFillString(); // Same hier wie hierunter..
     testToString(); // Nicht gefordert vom Praktikum, aber ich mache zur Sicherheit, da es eine wichtige Hilfsfunktion ist.
     testPrintMonthGrid();
     testGetWeekday();
