@@ -1,6 +1,6 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 2, Nr. 4 b) - Rasterausgabe für jeden Monat implementieren (geordnet nach Wochentagen)
+## Termin 2, Nr. 5 (optionale Aufgabe) - ein Datum auf ein Palindrom testen
 
 ---
 
