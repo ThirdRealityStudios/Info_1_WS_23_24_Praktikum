@@ -715,39 +715,49 @@ char* fillString(char *string, int newLength, char symbol)
     return filledString;
 }
 
-/// @brief Sagt, ob ein Datum ein Palindrom ist (1, wenn wahr, ansonsten 0)
+/// @brief Wandelt eine Zahl in einen String um,
+///        aber man kann hier zusätzlich die Stelligkeit angeben (Anzahl der Nullen).
+/// @param num Zahl.
+/// @param digits Stelligkeit der Zahl (wenn kleiner als die Zahl, dann hat dies keinen Effekt einfach)
+/// @return Zahl als formatierte Zeichenkette (Speicher bitte wieder später freigeben mit freeString(..)!)
+char* getDigitString(int num, int digits)
+{
+    char *numString = toString(num);
+
+    if(digits <= stringLength(numString))
+    {
+        return numString;
+    }
+
+    char *normalizedNumString = fillString(numString, digits, '0');
+
+    freeString(numString);
+
+    return normalizedNumString;
+}
+
+/// @brief Sagt, ob ein Datum ein Palindrom ist (1, wenn wahr, ansonsten 0).
+///        Hier wird jedes Palindrom ermittelt nach dem deutschen Format dd.mm.yyyy.
 /// @param day Tag
 /// @param month Monat
 /// @param year Jahr
 /// @return 1, wenn das Datum ein Palindrom ist, ansonsten 0.
 int isPalindrom(int day, int month, int year)
 {
-    return 0;
-}
+    char *dayString = getDigitString(day, 2),
+          *monthString = getDigitString(month, 2),
+          *yearString = getDigitString(year, 4);
 
-void testIsPalindrom()
-{
-    int day = 1, month = 1, year = 2023, result = 0;
+    int isPalindrom = dayString[0] == yearString[3] &&
+                      dayString[1] == yearString[2] &&
+                      monthString[0] == yearString[1] &&
+                      monthString[1] == yearString[0];
 
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+    freeString(dayString);
+    freeString(monthString);
+    freeString(yearString);
 
-    day = 22, month = 02, year = 2022;
-
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
-
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
-
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
-
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
-
-    result = isPalindrom(day, month, year);
-    printf("Ist %d.%d.%d ein Palindrom? %d\n", day, month, year, result);
+    return isPalindrom;
 }
 
 void testFillString()
@@ -845,6 +855,59 @@ void testToString()
     freeString(numString);
 }
 
+/// @brief Gefordert von Aufgabe 5, Praktikum-Termin 2!
+///        https://de.wikipedia.org/wiki/Liste_von_Palindromtagen
+void testIsPalindrom()
+{
+    int day = 1, month = 1, year = 2023, result = 0;
+
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 22, month = 2, year = 2022;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 10, month = 10, year = 101;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 14, month = 10, year = 141;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 29, month = 1, year = 1092;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 8, month = 2, year = 2080;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 11, month = 11, year = 2023;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    day = 18, month = 8, year = 2002;
+    result = isPalindrom(day, month, year);
+    printf("Ist %02d.%02d.%04d ein Palindrom? %d\n", day, month, year, result);
+
+    puts("");
+}
+
+void testUnits()
+{
+    #ifdef TESTE_JEDEN_SCHEISS
+    testFillString(); // Same hier wie hierunter..
+    testToString(); // Nicht gefordert vom Praktikum, aber ich mache zur Sicherheit, da es eine wichtige Hilfsfunktion ist.
+    testPrintMonthGrid();
+    testGetWeekday();
+    testPrintWeekday();
+    #endif
+
+    testIsPalindrom();
+}
+
 /// @brief Die Hauptfunktion
 /// @param argc Anzahl der Parameter auf der Konsole, inkl. Programmname selber.
 /// @param argv Zeichenketten, die eingegeben wurden.
@@ -855,13 +918,7 @@ int main(int argc, char **argv)
 
     int countryCode = USA;
 
-    testFillString(); // Same hier wie hierunter..
-    testToString(); // Nicht gefordert vom Praktikum, aber ich mache zur Sicherheit, da es eine wichtige Hilfsfunktion ist.
-    testPrintMonthGrid();
-    testGetWeekday();
-    testPrintWeekday();
-
-    testIsPalindrom();
+    testUnits();
 
     do
     {
@@ -889,7 +946,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            puts("Geben Sie ein gültiges Datum ein:");
+            puts("Geben Sie ein gueltiges Datum ein:");
 
             puts("1. Tag: ");
             scanf("%d", &day);
@@ -903,7 +960,9 @@ int main(int argc, char **argv)
     }
     while(!isDateValid(day, month, year));
 
-    puts("Geben Sie einen Ländercode ein (0 bis 4):");
+    puts("");
+
+    puts("Geben Sie einen Laendercode ein (0 bis 4):");
     scanf("%d", &countryCode);
 
     printDate(day, month, year, countryCode);
