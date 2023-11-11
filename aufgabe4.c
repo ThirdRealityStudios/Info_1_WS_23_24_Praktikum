@@ -331,9 +331,35 @@ int maxDaysOfMonth(int month, int year)
 /// @param grid Referenz auf Ihr 2D-Array, das Sie einfach übergeben.
 /// @param weekday Der Wochentag, z.B. "Montag", der für den übergebenen Tag gelten soll.
 /// @param day Der Tag aus dem jeweiligen Monat.
-void insertDay(int **grid, int weekday, int day)
+/// @param firstDayX Die Position auf x-Achse gesehen vom ersten Tag im Monat.
+///                  Wenn z.B. der 01.11.23 an der x-Position "2" steht in der ersten Zeile des Monats,
+///                  dann muss entsprechend eine 2 übergeben werden.
+///                  Bei dem 01.05.23 ist dies wiederum eine "0",
+///                  da dieser direkt an erster Stelle steht und ein ein Montag war.
+void insertDay(int **grid, int weekday, int day, int firstDayX)
 {
-    int y = (day - 1) / WIDTH;
+    /**
+     * Bugfix:
+     * 
+     * Hier muss zusätzlich "firstDayX" hinzuaddiert werden.
+     * Grund ist,
+     * dass jeder Monat einen unterschiedlichen ersten Wochentag hat
+     * im Bezug auf den 01.mm.yyyy jeden Monats.
+     * Beispielsweise ist der 01.11.2023 ein Mittwoch,
+     * während der 01.05.2023 wiederum ein Montag gewesen ist.
+     * Folglich kann man nicht einfach den Monatstag durch 7 teilen,
+     * um die Zeile zu ermitteln,
+     * wo dieser eingefügt werden soll.
+     * Nur deswegen muss ich also "firstDayX" noch zusätzlich hinzuaddieren,
+     * um das wieder auszugleichen.
+     * Dann erscheint der jeweilige Tag auch in der richtigen Zeile.
+     * Ohne "+ firstDayX" würden der Montag und der Dienstag immer
+     * eine Zeile später erscheinen als eigentlich erwartet (das war der Bug).
+     * Die Wertzuweisung vor dem Bugfix lautete also schlicht:
+     * int y = (day - 1) / WIDTH;
+     * Das war aber falsch..
+     */ 
+    int y = (day + firstDayX - 1) / WIDTH;
 
     int x = weekday - 1;
 
@@ -360,9 +386,14 @@ int** getMonthArray(int month, int year)
 {
     int **grid = createArray();
 
+    // Ermittelt die x-Position des ersten Tages in einem Monat "month"
+    // (für die erste Zeile),
+    // um später dann der Funktion insertDay(..) unten übergeben zu werden.
+    int firstDayX = getWeekday(1, month, year) - 1;
+
     for(int day = 1; day <= maxDaysOfMonth(month, year); day++)
     {
-        insertDay(grid, getWeekday(day, month, year), day);
+        insertDay(grid, getWeekday(day, month, year), day, firstDayX);
     }
 
     return grid;
