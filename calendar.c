@@ -1,3 +1,16 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define HEIGHT 6 // Einfach immer 6 Zeilen, um das Monatsraster zu repräsentieren pauschal.
+#define WIDTH 7 // 7 Wochentage
+
+#define GERMANY 0
+#define SPAIN 1
+#define USA 2
+#define FRANCE 3
+#define CHINA 4
+
 int isLeapYear(int year)
 {
     int isMulitpleOf400 = year % 400 == 0;
@@ -173,52 +186,80 @@ int getWeekday(int day, int month, int year)
     return d;
 }
 
-void printMonthGrid(int month, int year)
+int** createArray()
 {
-    if(!(month > 0 && month < 13 && year > 1969 && year < 2101))
+    int **arr = calloc(HEIGHT, sizeof(int));
+
+    for(int i = 0; i < HEIGHT; i++)
     {
-        return; // Print nothing if the given month and year is not supported or invalid.
+        arr[i] = calloc(WIDTH, sizeof(int));
     }
 
-    // Den Monat und Jahr ausgeben oberhalb des Kalendermonats.
-    printf("%s %04d\n", getMonthString(month), year);
+    return arr;
+}
 
-    int **monthArray = getMonthArray(month, year);
+void insertDay(int **grid, int weekday, int day, int firstDayX)
+{
+    /**
+     * Bugfix:
+     *
+     * Hier muss zusätzlich "firstDayX" hinzuaddiert werden.
+     * Grund ist,
+     * dass jeder Monat einen unterschiedlichen ersten Wochentag hat
+     * im Bezug auf den 01.mm.yyyy jeden Monats.
+     * Beispielsweise ist der 01.11.2023 ein Mittwoch,
+     * während der 01.05.2023 wiederum ein Montag gewesen ist.
+     * Folglich kann man nicht einfach den Monatstag durch 7 teilen,
+     * um die Zeile zu ermitteln,
+     * wo dieser eingefügt werden soll.
+     * Nur deswegen muss ich also "firstDayX" noch zusätzlich hinzuaddieren,
+     * um das wieder auszugleichen.
+     * Dann erscheint der jeweilige Tag auch in der richtigen Zeile.
+     * Ohne "+ firstDayX" würden der Montag und der Dienstag immer
+     * eine Zeile später erscheinen als eigentlich erwartet (das war der Bug).
+     * Die Wertzuweisung vor dem Bugfix lautete also schlicht:
+     * int y = (day - 1) / WIDTH;
+     * Das war aber falsch..
+     */
+    int y = (day + firstDayX - 1) / WIDTH;
 
-    int monthDayWidth = 4;
+    int x = weekday - 1;
 
-    for(int weekday = 1; weekday <= 7; weekday++)
+    grid[y][x] = day;
+}
+
+int maxDaysOfMonth(int month, int year)
+{
+    if(month % 2 == 0)
     {
-        char *weekdayString = getWeekdayString(weekday);
-
-        // Nur die ersten beiden Zeichen merken vom Wochentag zur Ausgabe,
-        // aber wichtig hier: in sind ALLE Strings immer NULL-terminiert,
-        // daher brauche ich das Zeichen '\0' noch am Ende (=> insgesamt 3 Zeichen benötigt zum Speichern).
-        char weekdayShortenedString[3] = {weekdayString[0], weekdayString[1], '\0'};
-
-        printf("%*s", monthDayWidth, weekdayShortenedString);
-    }
-
-    puts("");
-
-    for(int y = 0; y < HEIGHT; y++)
-    {
-        for(int x = 0; x < WIDTH; x++)
+        if(month == 2)
         {
-            int day = monthArray[y][x];
-
-            if(day > 0)
-            {
-                printf("%*d", monthDayWidth, day);
-            }
-            else
-            {
-                printf("%*s", monthDayWidth, "");
-            }
+            return isLeapYear(year) ? 29 : 28;
         }
 
-        puts("");
+        return month <= 7 ? 30 : 31;
     }
+    else
+    {
+        return month <= 7 ? 31 : 30;
+    }
+}
+
+int** getMonthArray(int month, int year)
+{
+    int **grid = createArray();
+
+    // Ermittelt die x-Position des ersten Tages in einem Monat "month"
+    // (für die erste Zeile),
+    // um später dann der Funktion insertDay(..) unten übergeben zu werden.
+    int firstDayX = getWeekday(1, month, year) - 1;
+
+    for(int day = 1; day <= maxDaysOfMonth(month, year); day++)
+    {
+        insertDay(grid, getWeekday(day, month, year), day, firstDayX);
+    }
+
+    return grid;
 }
 
 char* getMonthString(int month)
@@ -279,79 +320,51 @@ char* getMonthString(int month)
     }
 }
 
-int** getMonthArray(int month, int year)
+void printMonthGrid(int month, int year)
 {
-    int **grid = createArray();
-
-    // Ermittelt die x-Position des ersten Tages in einem Monat "month"
-    // (für die erste Zeile),
-    // um später dann der Funktion insertDay(..) unten übergeben zu werden.
-    int firstDayX = getWeekday(1, month, year) - 1;
-
-    for(int day = 1; day <= maxDaysOfMonth(month, year); day++)
+    if(!(month > 0 && month < 13 && year > 1969 && year < 2101))
     {
-        insertDay(grid, getWeekday(day, month, year), day, firstDayX);
+        return; // Print nothing if the given month and year is not supported or invalid.
     }
 
-    return grid;
-}
+    // Den Monat und Jahr ausgeben oberhalb des Kalendermonats.
+    printf("%s %04d\n", getMonthString(month), year);
 
-int** createArray()
-{
-    int **arr = calloc(HEIGHT, sizeof(int));
+    int **monthArray = getMonthArray(month, year);
 
-    for(int i = 0; i < HEIGHT; i++)
+    int monthDayWidth = 4;
+
+    for(int weekday = 1; weekday <= 7; weekday++)
     {
-        arr[i] = calloc(WIDTH, sizeof(int));
+        char *weekdayString = getWeekdayString(weekday);
+
+        // Nur die ersten beiden Zeichen merken vom Wochentag zur Ausgabe,
+        // aber wichtig hier: in sind ALLE Strings immer NULL-terminiert,
+        // daher brauche ich das Zeichen '\0' noch am Ende (=> insgesamt 3 Zeichen benötigt zum Speichern).
+        char weekdayShortenedString[3] = {weekdayString[0], weekdayString[1], '\0'};
+
+        printf("%*s", monthDayWidth, weekdayShortenedString);
     }
 
-    return arr;
-}
+    puts("");
 
-void insertDay(int **grid, int weekday, int day, int firstDayX)
-{
-    /**
-     * Bugfix:
-     *
-     * Hier muss zusätzlich "firstDayX" hinzuaddiert werden.
-     * Grund ist,
-     * dass jeder Monat einen unterschiedlichen ersten Wochentag hat
-     * im Bezug auf den 01.mm.yyyy jeden Monats.
-     * Beispielsweise ist der 01.11.2023 ein Mittwoch,
-     * während der 01.05.2023 wiederum ein Montag gewesen ist.
-     * Folglich kann man nicht einfach den Monatstag durch 7 teilen,
-     * um die Zeile zu ermitteln,
-     * wo dieser eingefügt werden soll.
-     * Nur deswegen muss ich also "firstDayX" noch zusätzlich hinzuaddieren,
-     * um das wieder auszugleichen.
-     * Dann erscheint der jeweilige Tag auch in der richtigen Zeile.
-     * Ohne "+ firstDayX" würden der Montag und der Dienstag immer
-     * eine Zeile später erscheinen als eigentlich erwartet (das war der Bug).
-     * Die Wertzuweisung vor dem Bugfix lautete also schlicht:
-     * int y = (day - 1) / WIDTH;
-     * Das war aber falsch..
-     */
-    int y = (day + firstDayX - 1) / WIDTH;
-
-    int x = weekday - 1;
-
-    grid[y][x] = day;
-}
-
-int maxDaysOfMonth(int month, int year)
-{
-    if(month % 2 == 0)
+    for(int y = 0; y < HEIGHT; y++)
     {
-        if(month == 2)
+        for(int x = 0; x < WIDTH; x++)
         {
-            return isLeapYear(year) ? 29 : 28;
+            int day = monthArray[y][x];
+
+            if(day > 0)
+            {
+                printf("%*d", monthDayWidth, day);
+            }
+            else
+            {
+                printf("%*s", monthDayWidth, "");
+            }
         }
 
-        return month <= 7 ? 30 : 31;
-    }
-    else
-    {
-        return month <= 7 ? 31 : 30;
+        puts("");
     }
 }
 
@@ -362,6 +375,7 @@ void printWeekday(int day, int month, int year)
 
 void testGetWeekday()
 {
+    puts("testGetWeekday()");
     puts("");
     printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(1, 1, 2000), 1, 1, 2000);
     printf("Weekday calculated is %d for %02d.%02d.%04d\n", getWeekday(28, 2, 2022), 28, 2, 2022);
@@ -475,6 +489,8 @@ void testPrintWeekday()
 
 void testPrintMonthGrid()
 {
+    puts("testPrintMonthGrid()");
+    puts("");
     printMonthGrid(11, 2023);
     puts("");
     printMonthGrid(10, 2023);
@@ -519,6 +535,7 @@ void testPrintMonthGrid()
 
 void testZellerAlgorithm()
 {
+    puts("testZellerAlgorithm()");
     puts("");
     printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(1, 1, 2000), 1, 1, 2000);
     printf("Weekday calculated is %d for %02d.%02d.%04d\n", zellerAlgorithm(28, 2, 2022), 28, 2, 2022);
