@@ -123,4 +123,4 @@ void testPrintMonthGrid();
 ///        indem alle untergeordneten Test-Funktionen aufgerufen werden nacheinander.
 void test();
 
-#endif CALENDAR_H
+#endif
