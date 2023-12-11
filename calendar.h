@@ -148,6 +148,9 @@ void testZellerAlgorithm();
 /// @brief Testet die Funktion printMonthGrid().
 void testPrintMonthGrid();
 
+/// @brief Blyat zum Testen von int compare(..).
+void testCompare();
+
 /// @brief Testet alle Funktionalitäten,
 ///        indem alle untergeordneten Test-Funktionen aufgerufen werden nacheinander.
 void test();

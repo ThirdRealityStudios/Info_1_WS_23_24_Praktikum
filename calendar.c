@@ -574,6 +574,38 @@ void testIsEarlierThan()
     puts("");
 }
 
+void testCompare()
+{
+    int date1_0[] = {1, 1, 1970, 0, 0, 0};
+    int date1_1[] = {1, 1, 1970, 0, 0, 1};
+
+    puts("");
+    puts("testCompare()");
+    puts("");
+    printf("1/1/1970 0:00:00 is after 1/1/1970 0:00:01 => %s\n", (compare(date1_0, date1_1) == 1 ? "yes" : "no"));
+    puts("");
+
+    int date2_0[] = {1, 1, 1971, 0, 0, 0};
+    int date2_1[] = {1, 1, 1970, 0, 0, 0};
+    printf("1/1/1971 0:00:00 is after 1/1/1970 0:00:00 => %s\n", (compare(date2_0, date2_1) == 1 ? "yes" : "no"));
+    puts("");
+
+    int date3_0[] = {1, 1, 1970, 0, 0, 0};
+    int date3_1[] = {1, 1, 1970, 12, 0, 0};
+    printf("1/1/1970 0:00:00 is after 1/1/1970 12:00:00 => %s\n", (compare(date3_0, date3_1) == 1 ? "yes" : "no"));
+    puts("");
+
+    int date4_0[] = {23, 2, 1981, 0, 0, 0};
+    int date4_1[] = {1, 1, 1991, 0, 0, 19};
+    printf("2/23/1981 0:00:00 is after 1/1/1991 0:00:19 => %s\n", (compare(date4_0, date4_1) == 1 ? "yes" : "no"));
+    puts("");
+
+    int date5_0[] = {1, 3, 1970, 0, 0, 0};
+    int date5_1[] = {28, 2, 1970, 23, 59, 59};
+    printf("1/3/1970 0:00:00 is after 28/2/1970 0:00:19 => %s\n", (compare(date5_0, date5_1) == 1 ? "yes" : "no"));
+    puts("");
+}
+
 void testIncDateSecond(int date[])
 {
     puts("testIncDateSecond()");
@@ -825,4 +857,5 @@ void test()
     testIsEarlierThan();
     testDateIncrementations();
     testToUnixTimes();
+    testCompare();
 }
