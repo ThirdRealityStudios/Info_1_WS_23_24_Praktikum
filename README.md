@@ -1,7 +1,7 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 3, Nr. 2 e) - Funktion aus der Aufgabenstellung nur übernehmen zur Bibliothek
+## Termin 3, Nr. 2 f) - zwei Daten bzw. Zeitstempel miteinander vergleichen
 
 ---
 
-Funktion zu kopieren.
+int compare(int first[], int second[]) implementieren.
