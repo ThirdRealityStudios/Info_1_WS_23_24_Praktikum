@@ -133,6 +133,17 @@ const char* unixtimeToString(long long timeStamp);
 /// @return Gibt 1 zurück, wenn "first" > "second", ansonsten -1.
 int compare(int first[], int second[]);
 
+/// @brief Sagt dir,
+///        ob ein Datum zwischen zwei anderen liegt.
+/// @param before Anfangsdatum
+/// @param between Datum, das dazwischen liegen soll.
+/// @param after Enddatum
+/// @return 1, wenn das Datum zwischen diesen liegt, ansonsten 0.
+int between(int before[], int between[], int after[]);
+
+/// @brief Testet die Funktion between().
+void testBetween();
+
 /// @brief Testet die Funktion printWeekday().
 void testPrintWeekday();
 

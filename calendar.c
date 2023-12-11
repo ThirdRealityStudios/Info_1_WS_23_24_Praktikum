@@ -538,6 +538,55 @@ int compare(int first[], int second[])
     return (isEarlierThan(first, second) == 1) ? 1 : -1;
 }
 
+int between(int before[], int between[], int after[])
+{
+    return compare(before, between) == -1 && compare(after, between) == 1;
+}
+
+void testBetween()
+{
+    int betweenDate[] = {28, 2, 1970, 23, 59, 59};
+
+    int date1_0[] = {1, 1, 1970, 0, 0, 0};
+    int date1_1[] = {1, 1, 1970, 0, 0, 1};
+
+    puts("");
+    puts("testBetween()");
+    puts("");
+    printf("1/1/1970 0:00:00 < 2/28/1970 23:59:59 < 1/1/1970 0:00:01 => %s\n", (between(date1_0, betweenDate, date1_1) ? "yes" : "no"));
+    puts("");
+
+    int date2_0[] = {1, 1, 1971, 0, 0, 0};
+    int date2_1[] = {1, 1, 1970, 0, 0, 0};
+    printf("1/1/1971 0:00:00 < 2/28/1970 23:59:59 < 1/1/1970 0:00:00 => %s\n", (between(date2_0, betweenDate, date2_1) ? "yes" : "no"));
+    puts("");
+
+    int date3_0[] = {1, 1, 1970, 0, 0, 0};
+    int date3_1[] = {1, 1, 1970, 12, 0, 0};
+    printf("1/1/1970 0:00:00 < 2/28/1970 23:59:59 < 1/1/1970 12:00:00 => %s\n", (between(date3_0, betweenDate, date3_1) ? "yes" : "no"));
+    puts("");
+
+    int date4_0[] = {23, 2, 1981, 0, 0, 0};
+    int date4_1[] = {1, 1, 1991, 0, 0, 19};
+    printf("2/23/1981 0:00:00 < 2/28/1970 23:59:59 < 1/1/1991 0:00:19 => %s\n", (between(date4_0, betweenDate, date4_1) ? "yes" : "no"));
+    puts("");
+
+    int date5_0[] = {1, 3, 1970, 0, 0, 0};
+    int date5_1[] = {28, 2, 1970, 23, 59, 59};
+    printf("1/3/1970 0:00:00 < 2/28/1970 23:59:59 < 28/2/1970 23:59:59 => %s\n", between(date5_0, betweenDate, date5_1) ? "yes" : "no");
+    puts("");
+
+    int date6_0[] = {28, 2, 1970, 23, 59, 58};
+    int date6_1[] = {28, 2, 1971, 23, 59, 59};
+    printf("2/28/1970 23:59:58 < 2/28/1970 23:59:59 < 2/28/1971 23:59:59 => %s\n", between(date6_0, betweenDate, date6_1) ? "yes" : "no");
+    puts("");
+
+    int date7_0[] = {1, 2, 1970, 0, 0, 0};
+    int date7_1[] = {1, 3, 1970, 0, 0, 0};
+    printf("2/1/1970 0:00:00 < 2/28/1970 23:59:59 < 3/1/1970 23:59:59 => %s\n", between(date7_0, betweenDate, date7_1) ? "yes" : "no");
+    puts("");
+}
+
 void testIsEarlierThan()
 {
     int dateEarlier[] = {1, 1, 1970, 0, 0, 0};
@@ -858,4 +907,5 @@ void test()
     testDateIncrementations();
     testToUnixTimes();
     testCompare();
+    testBetween();
 }
