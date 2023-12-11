@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define HEIGHT 6 // Einfach immer 6 Zeilen, um das Monatsraster zu repräsentieren pauschal.
 #define WIDTH 7 // 7 Wochentage
@@ -520,6 +521,15 @@ long long toUnixtime(int date[])
 void printWeekday(int day, int month, int year)
 {
     printf("%s\n", getWeekdayString(getWeekday(day, month, year)));
+}
+
+const char* unixtimeToString(long long timeStamp)
+{
+    struct tm *date;
+    date = localtime(&timeStamp);
+    static char str[20];
+    strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S", date);
+    return str;
 }
 
 void testIsEarlierThan()

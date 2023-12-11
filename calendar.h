@@ -122,6 +122,11 @@ void incDateSecond(int date[]);
 /// @return Anzahl der Sekunde seit 1.1.1970.
 long long toUnixtime(int date[]);
 
+/// @brief Gibt den jeweiligen Zeitstempel als String zurück,
+///        formatiert als deutsches Datum.
+/// @return Zeichenkette des jeweligen Datums.
+const char* unixtimeToString(long long timeStamp);
+
 /// @brief Testet die Funktion printWeekday().
 void testPrintWeekday();
 
