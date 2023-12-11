@@ -11,6 +11,11 @@
 #define FRANCE 3
 #define CHINA 4
 
+#define ONEDAY 86400
+#define ONEHOUR 3600
+#define ONEMINUTE 60
+#define ONESECOND 1
+
 int isLeapYear(int year)
 {
     int isMulitpleOf400 = year % 400 == 0;
@@ -65,7 +70,7 @@ void printDate(int day, int month, int year, int countryCode)
             break;
 
         case USA:
-            printf("%02d-%02d-%04d", month, day, year);
+            printf("%02d/%02d/%04d", month, day, year);
             break;
 
         case FRANCE:
@@ -78,7 +83,7 @@ void printDate(int day, int month, int year, int countryCode)
 
         default:
 
-            printDate(USA, day, month, year);
+            printDate(day, month, year, USA);
     }
 
     puts("");
@@ -368,9 +373,257 @@ void printMonthGrid(int month, int year)
     }
 }
 
+int isEarlierThan(int dateEarlier[], int dateLater[])
+{
+    // Compare year if older than the other one.
+    if(dateEarlier[2] < dateLater[2])
+    {
+        return 1;
+    }
+    else if(dateEarlier[2] > dateLater[2])
+    {
+        return 0;
+    }
+    else // both years equal to each other:
+    {
+        // Compare both months
+        if(dateEarlier[1] < dateLater[1])
+        {
+            return 1;
+        }
+        else if(dateEarlier[1] > dateLater[1])
+        {
+            return 0;
+        }
+        else // both months equal to each other:
+        {
+            // Compare both days
+            if(dateEarlier[0] < dateLater[0])
+            {
+                return 1;
+            }
+            else if(dateEarlier[0] > dateLater[0])
+            {
+                return 0;
+            }
+            else // both days equal to each other:
+            {
+                // Compare both hours
+                if(dateEarlier[3] < dateLater[3])
+                {
+                    return 1;
+                }
+                else if(dateEarlier[3] > dateLater[3])
+                {
+                    return 0;
+                }
+                else // both hours equal to each other:
+                {
+                    // Compare both minutes
+                    if(dateEarlier[4] < dateLater[4])
+                    {
+                        return 1;
+                    }
+                    else if(dateEarlier[4] > dateLater[4])
+                    {
+                        return 0;
+                    }
+                    else // both minutes equal to each other:
+                    {
+                        // Compare both seconds
+                        if(dateEarlier[5] < dateLater[5])
+                        {
+                            return 1;
+                        }
+                        else if(dateEarlier[5] > dateLater[5])
+                        {
+                            return 0;
+                        }
+                        else // both seconds equal to each other
+                        {
+                            return 0; // both date objects are identical!
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void incDateSecond(int date[])
+{
+    int second = date[5],
+        minute = date[4],
+        hour   = date[3],
+
+        year   = date[2],
+        month  = date[1],
+        day    = date[0];
+
+    second++; // Increment the second.
+
+    if(second > 59)
+    {
+        minute++; // Increment the minute.
+        second = 0; // Reset the seconds.
+    }
+
+    if(minute > 59)
+    {
+        hour++; // Increment the hour.
+        minute = 0; // Reset the minutes.
+    }
+
+    if(hour > 23)
+    {
+        day++; // Increment the days.
+        hour = 0; // Reset the hours.
+    }
+
+    if(day > maxDaysOfMonth(date[1], date[2]))
+    {
+        month++; // Increment the month.
+        day = 1; // Reset the days (first of next month).
+    }
+
+    if(month > 12)
+    {
+        month = 1; // Reset month to the first of next year.
+        year++; // Increment the year.
+    }
+
+    date[0] = day;
+    date[1] = month;
+    date[2] = year;
+    date[3] = hour;
+    date[4] = minute;
+    date[5] = second;
+}
+
+long long toUnixtime(int date[])
+{
+    int startDate[] = {1,1,1970,0,0,0};
+
+    int daysCurrentMonth = 0;
+
+    long long seconds = 0;
+
+    while(isEarlierThan(startDate, date))
+    {
+        seconds++;
+        incDateSecond(startDate);
+    }
+
+    return seconds;
+}
+
 void printWeekday(int day, int month, int year)
 {
     printf("%s\n", getWeekdayString(getWeekday(day, month, year)));
+}
+
+void testIsEarlierThan()
+{
+    int dateEarlier[] = {1, 1, 1970, 0, 0, 0};
+    int dateLater[] = {1, 1, 1970, 0, 0, 1};
+
+    puts("testIsEarlierThan()");
+    puts("");
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:01 => %s\n", (isEarlierThan(dateEarlier, dateLater) ? "yes" : "no"));
+    puts("");
+
+    int dateEarlier1[] = {1, 1, 1970, 0, 0, 0};
+    int dateLater1[] = {1, 1, 1970, 0, 0, 0};
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier1, dateLater1) ? "yes" : "no"));
+    puts("");
+
+    int dateEarlier2[] = {1, 1, 1971, 0, 0, 0};
+    int dateLater2[] = {1, 1, 1970, 0, 0, 0};
+    printf("1/1/1971 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier2, dateLater2) ? "yes" : "no"));
+    puts("");
+
+    int dateEarlier3[] = {1, 1, 1970, 0, 0, 0};
+    int dateLater3[] = {1, 1, 1970, 12, 0, 0};
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 12:00:00 => %s\n", (isEarlierThan(dateEarlier3, dateLater3) ? "yes" : "no"));
+    puts("");
+
+    int dateEarlier4[] = {23, 2, 1981, 0, 0, 0};
+    int dateLater4[] = {1, 1, 1991, 0, 0, 19};
+    printf("2/23/1981 0:00:00 is earlier than 1/1/1991 0:00:19 => %s\n", (isEarlierThan(dateEarlier4, dateLater4) ? "yes" : "no"));
+    puts("");
+
+    int dateEarlier5[] = {1, 3, 1970, 0, 0, 0};
+    int dateLater5[] = {28, 2, 1970, 23, 59, 59};
+    printf("1/3/1970 0:00:00 is earlier than 28/2/1970 0:00:19 => %s\n", (isEarlierThan(dateEarlier5, dateLater5) ? "yes" : "no"));
+    puts("");
+}
+
+void testIncDateSecond(int date[])
+{
+    puts("testIncDateSecond()");
+    puts("");
+    printf("Incrementing %02d:%02d:%02d ", date[3], date[4], date[5]);
+    printDate(date[0], date[1], date[2], USA);
+    printf("=> ");
+    incDateSecond(date);
+    printf("%02d:%02d:%02d ", date[3], date[4], date[5]);
+    printDate(date[0], date[1], date[2], USA);
+    puts("");
+}
+
+void testDateIncrementations()
+{
+    int date0[] = {1,1,1970,0,0,0};
+    testIncDateSecond(date0);
+
+    int date1[] = {1,1,1970,0,0,59};
+    testIncDateSecond(date1);
+
+    int date2[] = {1,1,1970,0,59,59};
+    testIncDateSecond(date2);
+
+    int date3[] = {1,1,1970,23,59,59};
+    testIncDateSecond(date3);
+
+    int date4[] = {31,1,1970,23,59,59};
+    testIncDateSecond(date4);
+
+    int date5[] = {28,2,1970,23,59,59};
+    testIncDateSecond(date5);
+}
+
+void testToUnixTime(int date[])
+{
+    puts("\ntestToUnixTime()");
+    puts("");
+    printf("Unix-Time calculated for %02d:%02d:%02d ", date[3], date[4], date[5]);
+    printDate(date[0], date[1], date[2], USA);
+    printf("=> %lld", toUnixtime(date));
+    puts("");
+}
+
+void testToUnixTimes()
+{
+    int date0[] = {1,1,1970,0,0,0};
+    testToUnixTime(date0);
+
+    int date1[] = {1,1,1970,0,0,59};
+    testToUnixTime(date1);
+
+    int date2[] = {1,1,1970,0,59,59};
+    testToUnixTime(date2);
+
+    int date3[] = {1,1,1970,23,59,59};
+    testToUnixTime(date3);
+
+    int date4[] = {31,1,1970,23,59,59};
+    testToUnixTime(date4);
+
+    int date5[] = {28,2,1970,23,59,59};
+    testToUnixTime(date5);
+
+    int date6[] = {11,12,2023,13,22,29};
+    testToUnixTime(date6);
 }
 
 void testGetWeekday()
@@ -551,4 +804,7 @@ void test()
     testPrintWeekday();
     testZellerAlgorithm();
     testPrintMonthGrid();
+    testIsEarlierThan();
+    testDateIncrementations();
+    testToUnixTimes();
 }

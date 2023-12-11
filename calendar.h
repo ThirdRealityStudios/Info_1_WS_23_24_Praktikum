@@ -104,6 +104,24 @@ char* getMonthString(int month);
 /// @param year Jahr
 void printMonthGrid(int month, int year);
 
+/// @brief Sagt dir,
+///        ob ein Datum älter ist als das andere.
+/// @param dateEarlier Älteres Datum als Array der Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
+/// @param dateLater Neueres Datum als Array der Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
+/// @return 1, wenn dateEarlier < dateLater. Ansonsten 0.
+int isEarlierThan(int dateEarlier[], int dateLater[]);
+
+/// @brief Inkrementiert ein Datumsobjekt um eine Sekunde.
+/// @param date Datumsarray der Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
+void incDateSecond(int date[]);
+
+/// @brief Berechnet für ein gegebenes Datum (in Form eines Arrays)
+///        die Unix-Zeit,
+///        also die verstrichenen Sekunde seit dem 1.1.1970.
+/// @param date Array muss Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
+/// @return Anzahl der Sekunde seit 1.1.1970.
+long long toUnixtime(int date[]);
+
 /// @brief Testet die Funktion printWeekday().
 void testPrintWeekday();
 
