@@ -108,7 +108,7 @@ void printMonthGrid(int month, int year);
 ///        ob ein Datum älter ist als das andere.
 /// @param dateEarlier Älteres Datum als Array der Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
 /// @param dateLater Neueres Datum als Array der Form {Tag, Monat, Jahr, Stunde, Minute, Sekunde}.
-/// @return 1, wenn dateEarlier < dateLater. Ansonsten 0.
+/// @return -1, wenn dateEarlier kleiner als dateLater. Ansonsten 0, wenn beide gleich. Andernfalls 1, wenn dateEarlier größer ist als dateLater.
 int isEarlierThan(int dateEarlier[], int dateLater[]);
 
 /// @brief Inkrementiert ein Datumsobjekt um eine Sekunde.

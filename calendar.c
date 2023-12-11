@@ -379,66 +379,66 @@ int isEarlierThan(int dateEarlier[], int dateLater[])
     // Compare year if older than the other one.
     if(dateEarlier[2] < dateLater[2])
     {
-        return 1;
+        return -1;
     }
     else if(dateEarlier[2] > dateLater[2])
     {
-        return 0;
+        return 1;
     }
     else // both years equal to each other:
     {
         // Compare both months
         if(dateEarlier[1] < dateLater[1])
         {
-            return 1;
+            return -1;
         }
         else if(dateEarlier[1] > dateLater[1])
         {
-            return 0;
+            return 1;
         }
         else // both months equal to each other:
         {
             // Compare both days
             if(dateEarlier[0] < dateLater[0])
             {
-                return 1;
+                return -1;
             }
             else if(dateEarlier[0] > dateLater[0])
             {
-                return 0;
+                return 1;
             }
             else // both days equal to each other:
             {
                 // Compare both hours
                 if(dateEarlier[3] < dateLater[3])
                 {
-                    return 1;
+                    return -1;
                 }
                 else if(dateEarlier[3] > dateLater[3])
                 {
-                    return 0;
+                    return 1;
                 }
                 else // both hours equal to each other:
                 {
                     // Compare both minutes
                     if(dateEarlier[4] < dateLater[4])
                     {
-                        return 1;
+                        return -1;
                     }
                     else if(dateEarlier[4] > dateLater[4])
                     {
-                        return 0;
+                        return 1;
                     }
                     else // both minutes equal to each other:
                     {
                         // Compare both seconds
                         if(dateEarlier[5] < dateLater[5])
                         {
-                            return 1;
+                            return -1;
                         }
                         else if(dateEarlier[5] > dateLater[5])
                         {
-                            return 0;
+                            return 1;
                         }
                         else // both seconds equal to each other
                         {
@@ -509,7 +509,7 @@ long long toUnixtime(int date[])
 
     long long seconds = 0;
 
-    while(isEarlierThan(startDate, date))
+    while(isEarlierThan(startDate, date) == -1)
     {
         seconds++;
         incDateSecond(startDate);
@@ -532,6 +532,12 @@ const char* unixtimeToString(long long timeStamp)
     return str;
 }
 
+int compare(int first[], int second[])
+{
+    // ein Wrapper bilden
+    return (isEarlierThan(first, second) == 1) ? 1 : -1;
+}
+
 void testIsEarlierThan()
 {
     int dateEarlier[] = {1, 1, 1970, 0, 0, 0};
@@ -539,32 +545,32 @@ void testIsEarlierThan()
 
     puts("testIsEarlierThan()");
     puts("");
-    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:01 => %s\n", (isEarlierThan(dateEarlier, dateLater) ? "yes" : "no"));
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:01 => %s\n", (isEarlierThan(dateEarlier, dateLater) == -1 ? "yes" : "no"));
     puts("");
 
     int dateEarlier1[] = {1, 1, 1970, 0, 0, 0};
     int dateLater1[] = {1, 1, 1970, 0, 0, 0};
-    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier1, dateLater1) ? "yes" : "no"));
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier1, dateLater1) == -1 ? "yes" : "no"));
     puts("");
 
     int dateEarlier2[] = {1, 1, 1971, 0, 0, 0};
     int dateLater2[] = {1, 1, 1970, 0, 0, 0};
-    printf("1/1/1971 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier2, dateLater2) ? "yes" : "no"));
+    printf("1/1/1971 0:00:00 is earlier than 1/1/1970 0:00:00 => %s\n", (isEarlierThan(dateEarlier2, dateLater2) == -1 ? "yes" : "no"));
     puts("");
 
     int dateEarlier3[] = {1, 1, 1970, 0, 0, 0};
     int dateLater3[] = {1, 1, 1970, 12, 0, 0};
-    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 12:00:00 => %s\n", (isEarlierThan(dateEarlier3, dateLater3) ? "yes" : "no"));
+    printf("1/1/1970 0:00:00 is earlier than 1/1/1970 12:00:00 => %s\n", (isEarlierThan(dateEarlier3, dateLater3) == -1 ? "yes" : "no"));
     puts("");
 
     int dateEarlier4[] = {23, 2, 1981, 0, 0, 0};
     int dateLater4[] = {1, 1, 1991, 0, 0, 19};
-    printf("2/23/1981 0:00:00 is earlier than 1/1/1991 0:00:19 => %s\n", (isEarlierThan(dateEarlier4, dateLater4) ? "yes" : "no"));
+    printf("2/23/1981 0:00:00 is earlier than 1/1/1991 0:00:19 => %s\n", (isEarlierThan(dateEarlier4, dateLater4) == -1 ? "yes" : "no"));
     puts("");
 
     int dateEarlier5[] = {1, 3, 1970, 0, 0, 0};
     int dateLater5[] = {28, 2, 1970, 23, 59, 59};
-    printf("1/3/1970 0:00:00 is earlier than 28/2/1970 0:00:19 => %s\n", (isEarlierThan(dateEarlier5, dateLater5) ? "yes" : "no"));
+    printf("1/3/1970 0:00:00 is earlier than 28/2/1970 0:00:19 => %s\n", (isEarlierThan(dateEarlier5, dateLater5) == -1 ? "yes" : "no"));
     puts("");
 }
 
