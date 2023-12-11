@@ -604,6 +604,8 @@ void testToUnixTime(int date[])
 
 void testToUnixTimes()
 {
+    // Zur Kontrolle für die Richtigkeit: https://www.epochconverter.com/
+
     int date0[] = {1,1,1970,0,0,0};
     testToUnixTime(date0);
 
