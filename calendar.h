@@ -127,6 +127,12 @@ long long toUnixtime(int date[]);
 /// @return Zeichenkette des jeweligen Datums.
 const char* unixtimeToString(long long timeStamp);
 
+/// @brief Vergleicht zwei Daten "first" und "second".
+/// @param first Erstes Datum
+/// @param second Zweites Datum
+/// @return Gibt 1 zurück, wenn "first" > "second", ansonsten -1.
+int compare(int first[], int second[]);
+
 /// @brief Testet die Funktion printWeekday().
 void testPrintWeekday();
 
