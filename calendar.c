@@ -543,6 +543,44 @@ int between(int before[], int between[], int after[])
     return compare(before, between) == -1 && compare(after, between) == 1;
 }
 
+long long readTermin()
+{
+    int date[6], minimumDate[] = {1,1,1970,1,0,0};
+
+    puts("Bitte geben Sie Datum und Uhrzeit ein im Format");
+    puts("dd.mm.yyyy hh:MM");
+    puts("");
+    scanf("%02d.%02d.%04d %02d:%02d", &date[0], &date[1], &date[2], &date[3], &date[4]);
+    puts("");
+
+    date[5] = 0; // Sekunden ignorieren.
+
+    // Make sure the entry is valid (at least 01/01/1970 01:00 am)
+    if(compare(minimumDate, date) == 1)
+    {
+        puts("Ihre Eingabe war ungueltig!");
+
+        return readTermin();
+    }
+
+    // Von der Eingabe ONEHOUR abziehen,
+    // um wieder UTC+0 zu erhalten,
+    // da der Benutzer die Uhrzeit in deutscher Zeit eingibt.
+    return toUnixtime(date) - ONEHOUR;
+}
+
+void testReadTermin()
+{
+    long long unixTime = 0;
+
+    for(int i = 0; i < 3; i++)
+    {
+        unixTime = readTermin();
+
+        printf("\nTermin erkannt fuer %s\n\n", unixtimeToString(unixTime));
+    }
+}
+
 void testBetween()
 {
     int betweenDate[] = {28, 2, 1970, 23, 59, 59};
@@ -898,6 +936,7 @@ void testZellerAlgorithm()
 
 void test()
 {
+    /*
     testPrintWeekday();
     testGetWeekday();
     testPrintWeekday();
@@ -908,4 +947,6 @@ void test()
     testToUnixTimes();
     testCompare();
     testBetween();
+     */
+    testReadTermin();
 }

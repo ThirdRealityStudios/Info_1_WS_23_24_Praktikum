@@ -141,6 +141,14 @@ int compare(int first[], int second[]);
 /// @return 1, wenn das Datum zwischen diesen liegt, ansonsten 0.
 int between(int before[], int between[], int after[]);
 
+/// @brief Liest einen Termin (gemäß UTC+1 = deutsche Zeit) von der Konsole ein und
+///        gibt diesen als Unix-Time-Wert zurück.
+///        Der Termin wird wiederum als UTC+0 Unix-Zeit zurückgegeben (also unabhängig von der deutschen Zeit).
+long long readTermin();
+
+/// @brief Testet die Funktion readTermin()
+void testReadTermin();
+
 /// @brief Testet die Funktion between().
 void testBetween();
 
