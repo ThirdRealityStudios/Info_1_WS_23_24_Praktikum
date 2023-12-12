@@ -1,7 +1,8 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 3, Nr. 2 g) - gucken, ob ein Datum zwischen zwei anderen liegt.
+## Termin 3, Nr. 3 a) - Terminserie implementieren
 
 ---
 
-Eine entsprechende Funktion ist zu implementieren.
+Termin-Rythmus' ermöglichen in einem bestimmten Takt,
+z.B. täglich, wöchtenlich usw.
