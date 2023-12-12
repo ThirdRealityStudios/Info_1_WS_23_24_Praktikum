@@ -1,8 +1,7 @@
 # Info 1, WS 23/24, Praktikum
 
-## Termin 3, Nr. 3 a) - Terminserie implementieren
+## Termin 3, Nr. 3 b) - Terminserie implementieren
 
 ---
 
-Termin-Rythmus' ermöglichen in einem bestimmten Takt,
-z.B. täglich, wöchtenlich usw.
+Menüführung zu implementieren und so weiter..
