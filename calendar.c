@@ -528,8 +528,8 @@ void printWeekday(int day, int month, int year)
 const char* unixtimeToString(long long timeStamp)
 {
     struct tm *date;
-    // date = gmtime(&timeStamp); // Einsetzen, wenn man keine "Zeit-Bugs" haben möchte wegen den unterschiedlichen Zeitzonen.
-    date = localtime(&timeStamp); // localtime(..) wird den Unix-Zeitwert zeitlich verschieben wegen deutscher Zeit => der Wert wird sich vom erwarteten, eigentlichen Unix-Zeitwert unterscheiden (nicht wundern).
+    date = gmtime(&timeStamp); // Verwenden, wenn man keine "Zeit-Bugs" haben möchte wegen den unterschiedlichen Zeitzonen.
+    // date = localtime(&timeStamp); // localtime(..) wird den Unix-Zeitwert zeitlich verschieben wegen deutscher Zeit => der Wert wird sich vom erwarteten, eigentlichen Unix-Zeitwert unterscheiden (nicht wundern).
     static char str[20];
     strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S", date);
     return str;

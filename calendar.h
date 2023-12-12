@@ -8,6 +8,11 @@
 #define FRANCE 3
 #define CHINA 4
 
+#define ONEDAY 86400
+#define ONEHOUR 3600
+#define ONEMINUTE 60
+#define ONESECOND 1
+
 #define MAX_TERMINE 3
 
 /// @brief Sagt, ob das Jahr ein Schaltjahr ist.
