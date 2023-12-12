@@ -8,6 +8,8 @@
 #define FRANCE 3
 #define CHINA 4
 
+#define MAX_TERMINE 3
+
 /// @brief Sagt, ob das Jahr ein Schaltjahr ist.
 /// @param year
 /// @return 1 wenn Schaltjahr, ansonsten 0.
@@ -146,7 +148,19 @@ int between(int before[], int between[], int after[]);
 ///        Der Termin wird wiederum als UTC+0 Unix-Zeit zurückgegeben (also unabhängig von der deutschen Zeit).
 long long readTermin();
 
-/// @brief Testet die Funktion readTermin()
+/// @brief Speichert einen Termin als Unix-Zeit in das Array "termine" an Stelle "position".
+/// @param termin Termin als Datumsobjekt mit Uhrzeit
+/// @param termine Array, um maximal MAX_TERMINE Termine zu speichern (long long Werte als Unix-Zeit).
+/// @param position Position im Array "termine" zum Abspeichern (nicht abgesichert).
+void setTermin(int termin[6], long long termine[MAX_TERMINE], int position);
+
+/// @brief Druckt die Uhrzeit eines Datumsobjektes aus.
+void printHour(int date[6]);
+
+/// @brief Testet die Funktion setTermin().
+void testAddTermin();
+
+/// @brief Testet die Funktion readTermin().
 void testReadTermin();
 
 /// @brief Testet die Funktion between().

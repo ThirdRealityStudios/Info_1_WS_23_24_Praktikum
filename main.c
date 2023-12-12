@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            puts("Geben Sie ein gültiges Datum ein:");
+            puts("Geben Sie ein gueltiges Datum ein:");
 
             puts("1. Tag: ");
             scanf("%d", &day);

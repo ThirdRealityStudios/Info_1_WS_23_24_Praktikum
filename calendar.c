@@ -17,6 +17,8 @@
 #define ONEMINUTE 60
 #define ONESECOND 1
 
+#define MAX_TERMINE 3
+
 int isLeapYear(int year)
 {
     int isMulitpleOf400 = year % 400 == 0;
@@ -526,7 +528,8 @@ void printWeekday(int day, int month, int year)
 const char* unixtimeToString(long long timeStamp)
 {
     struct tm *date;
-    date = localtime(&timeStamp);
+    // date = gmtime(&timeStamp); // Einsetzen, wenn man keine "Zeit-Bugs" haben möchte wegen den unterschiedlichen Zeitzonen.
+    date = localtime(&timeStamp); // localtime(..) wird den Unix-Zeitwert zeitlich verschieben wegen deutscher Zeit => der Wert wird sich vom erwarteten, eigentlichen Unix-Zeitwert unterscheiden (nicht wundern).
     static char str[20];
     strftime(str, sizeof(str), "%d.%m.%Y %H:%M:%S", date);
     return str;
@@ -551,6 +554,7 @@ long long readTermin()
     puts("dd.mm.yyyy hh:MM");
     puts("");
     scanf("%02d.%02d.%04d %02d:%02d", &date[0], &date[1], &date[2], &date[3], &date[4]);
+    fflush(stdin);
     puts("");
 
     date[5] = 0; // Sekunden ignorieren.
@@ -567,6 +571,60 @@ long long readTermin()
     // um wieder UTC+0 zu erhalten,
     // da der Benutzer die Uhrzeit in deutscher Zeit eingibt.
     return toUnixtime(date) - ONEHOUR;
+}
+
+void setTermin(int termin[6], long long termine[MAX_TERMINE], int position)
+{
+    termine[position] = toUnixtime(termin);
+}
+
+void printHour(int date[6])
+{
+    printf("%02d:%02d\n", date[3], date[4]);
+}
+
+void testAddTermin()
+{
+    // Termine in Unix-Zeit UTC+0.
+    long long termine[MAX_TERMINE];
+
+    int position = 0;
+
+    int termin1[] = {1,1,1970,0,0,0},
+        termin2[] = {1,1,1979,0,0,0},
+        termin3[] = {18,9,2000,0,0,0};
+
+    puts("Termin (original)");
+    printDate(termin1[0], termin1[1], termin1[2], GERMANY);
+    printHour(termin1);
+    setTermin(termin1, termine, position);
+    puts("");
+    puts("Termin (gespeichert)");
+    printf("%s", unixtimeToString(termine[position]));
+    position++;
+
+    puts("\n");
+
+    puts("Termin (original)");
+    printDate(termin2[0], termin2[1], termin2[2], GERMANY);
+    printHour(termin2);
+    setTermin(termin2, termine, position);
+    puts("");
+    puts("Termin (gespeichert)");
+    printf("%s", unixtimeToString(termine[position]));
+    position++;
+
+    puts("\n");
+
+    puts("Termin (original)");
+    printDate(termin3[0], termin3[1], termin3[2], GERMANY);
+    printHour(termin3);
+    setTermin(termin3, termine, position);
+    puts("");
+    puts("Termin (gespeichert)");
+    printf("%s", unixtimeToString(termine[position]));
+
+    puts("\n");
 }
 
 void testReadTermin()
@@ -947,6 +1005,8 @@ void test()
     testToUnixTimes();
     testCompare();
     testBetween();
-     */
     testReadTermin();
+     */
+
+    testAddTermin();
 }
