@@ -578,6 +578,23 @@ void setTermin(int termin[6], long long termine[MAX_TERMINE], int position)
     termine[position] = toUnixtime(termin);
 }
 
+int getUserInputMainMenu()
+{
+    int input;
+    printf("1. Terminserie erstellen\n"
+	       "2. Terminserie anzeigen\n"
+		   "9. Programm beenden\n");
+	scanf("%d", &input);
+	
+	#if WIN32 || WIN64
+		fflush(stdin);
+	#else
+		getchar();
+	#endif
+	
+	return input;
+}
+
 void printHour(int date[6])
 {
     printf("%02d:%02d\n", date[3], date[4]);

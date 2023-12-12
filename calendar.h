@@ -154,6 +154,10 @@ long long readTermin();
 /// @param position Position im Array "termine" zum Abspeichern (nicht abgesichert).
 void setTermin(int termin[6], long long termine[MAX_TERMINE], int position);
 
+/// @brief Ermöglicht eine pure Wahl einer Option zum Anlegen und Ansehen von Terminserien.
+/// @return Wahl, die getroffen wurde.
+int getUserInputMainMenu();
+
 /// @brief Druckt die Uhrzeit eines Datumsobjektes aus.
 void printHour(int date[6]);
 
