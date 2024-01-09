@@ -40,7 +40,7 @@ Termin* readTermin()
 	
 	fputs("\nJetzt bitte Datum und Uhrzeit (tt.mm.jjjj hh:mm): ", stdout);
 	
-	while(fscanf(stdin, "%d.%d.%d %d:%d", &tag, &monat, &jahr, &stunde, &minute) == 0
+	while(fscanf(stdin, "%d.%d.%d %d:%d", &tag, &monat, &jahr, &stunde, &minute) != 5
 		  || jahr < 1970 || jahr > 2037)
 	{
 		fputs("\nIhre Termineingabe enthaelt einen Fehler!\n"
@@ -90,6 +90,9 @@ void printTerminZeile(Termin *t)
 	time_t time = t -> start;
 
 	struct tm *stamp = localtime(&time);
+	stamp -> tm_isdst = 0; // ignorieren von Sommer und Winterzeit,
+						   // da sonst die Termine deswegen sich verschieben.
+						   // TODO strftime() scheint diese Einstellung zu ignorieren..?!
 
 	char formatTime[100];
 	
@@ -97,7 +100,7 @@ void printTerminZeile(Termin *t)
 	
 	fprintf(stdout, "Titel: %22s | ", t -> titel);
 	fprintf(stdout, "Beginn: %18s | ", formatTime);
-	fprintf(stdout, "Dauer: %3d\n", t -> dauer);
+	fprintf(stdout, " Dauer: %3d\n", t -> dauer);
 }
 
 int main(int argc, char *argv)
@@ -194,7 +197,8 @@ int main(int argc, char *argv)
 			break;
 			
 			case 2: // Terminserie anlegen
-				do{
+				do
+				{
 					fputs("Soll Ihr Termin taeglich (1), woechentlich (2) oder 2-woechentlich (3) sein? > ", stdout);
 					
 					scanfSuccess = fscanf(stdin, "%d", &relativeHaeufigkeit);
@@ -203,7 +207,8 @@ int main(int argc, char *argv)
 				}
 				while(relativeHaeufigkeit < 1 || relativeHaeufigkeit > 3 || scanfSuccess != 1);
 				
-				do{
+				do
+				{
 					fputs("Wie oft brauchen Sie den Termin? > ", stdout);
 					
 					scanfSuccess = fscanf(stdin, "%d", &absoluteHaeufigkeit);
