@@ -434,7 +434,88 @@ int main(int argc, char *argv)
 			break;
 			}
 			case 6: // Kalenderausgabe
+			{
+				int woche = 0;
 				
+				int anzahlWerte = 0;
+				
+				do
+				{
+					fputs("Welche Woche (1 bis 52)? > ", stdout);
+					anzahlWerte = fscanf(stdin, "%d", &woche);
+					fflush(stdin);
+					fputs("\n", stdout);
+				}
+				while(anzahlWerte != 1 || woche < 1 || woche > 52);
+				
+				time_t systemzeit = time(NULL);
+				
+				// bloß nicht freen, ist nämlich static returned.
+				struct tm *systemzeitTm = localtime(&systemzeit);
+				
+				int jahr = systemzeitTm -> tm_year + 1900;
+				
+				// ersten Montag der Woche ermitteln:
+				struct tm *moeglicherWochenmontag = NULL;
+				
+				int aktuelleWoche = 0;
+				
+				while(moeglicherWochenmontag == NULL ||
+					 (moeglicherWochenmontag != NULL
+					  && (moeglicherWochenmontag -> tm_wday != 1
+					  || aktuelleWoche != woche)))
+				{
+					if(moeglicherWochenmontag == NULL)
+					{
+						// 1. Jan diesen Jahres erstellen als struct tm Obj
+						moeglicherWochenmontag = calloc(sizeof(struct tm), 1);
+						
+						moeglicherWochenmontag -> tm_mday = 1;
+						moeglicherWochenmontag -> tm_mon = 0; // Januar
+						moeglicherWochenmontag -> tm_year = jahr - 1900; // normalisieren
+						moeglicherWochenmontag -> tm_isdst = 0; // ausschalten den Müll
+						
+						time_t tempTime = mktime(moeglicherWochenmontag);
+						
+						struct tm *temp = localtime(&tempTime); // jetzt sollte auch tm_wday
+																// korrekt gesetzt sein.
+						
+						free(moeglicherWochenmontag);
+						moeglicherWochenmontag = NULL;
+						
+						moeglicherWochenmontag = temp;
+						
+						// printf("tm_wday = %d\n", moeglicherWochenmontag -> tm_wday);
+
+						// tm_wday = 1 ist immer Montag. 0 ist Sonntag.
+						if(moeglicherWochenmontag -> tm_wday == 1)
+						{
+							aktuelleWoche = 1;
+							
+							continue;
+						}
+					}
+					else
+					{
+						moeglicherWochenmontag -> tm_mday++;
+						
+						time_t tempTime = mktime(moeglicherWochenmontag);
+						
+						struct tm *temp = localtime(&tempTime);
+						
+						moeglicherWochenmontag = temp;
+						
+						if(moeglicherWochenmontag -> tm_wday == 1)
+							aktuelleWoche++;
+					}
+				}
+				
+				char datumString[100];
+				
+				strftime(datumString, sizeof(datumString), "%d.%m.%Y %H:%M", moeglicherWochenmontag);
+				
+				printf("%s\n", datumString);
+			}
 			break;
 			
 			case 9: // Programm beenden
