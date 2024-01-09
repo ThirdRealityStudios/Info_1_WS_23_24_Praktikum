@@ -376,9 +376,58 @@ int main(int argc, char *argv)
 			break;
 			
 			case 5: // Naechsten Termin anzeigen
+			{
+				Termin *neachster = NULL;
 				
+				time_t systemzeit = time(NULL);
+				
+				// Nächsten Termin suchen (nicht aus Serien).
+				for(int iT = 0; iT < termineLength; iT++)
+				{
+					// Termine aus Vergangenheit überspringen.
+					if(termine[iT].start <= systemzeit)
+						continue;
+					// Schauen, ob der gefundene Termin noch früher ist.
+					else if(neachster != NULL && termine[iT].start < neachster -> start)
+						neachster = &termine[iT];
+					else if(neachster == NULL) // es gibt noch keinen Vergleichstermin.
+						neachster = &termine[iT];
+				}
+				
+				Terminserie *aktuelleSerie = NULL;
+				
+				for(int iS = 0; iS < serienLength; iS++)
+				{
+					aktuelleSerie = &serien[iS];
+					
+					// Nächsten Termin suchen (anhand der aktuellen Terminserie).
+					for(int iST = 0; iST < aktuelleSerie -> termineLength; iST++)
+					{
+						// Termine aus Vergangenheit überspringen.
+						if(aktuelleSerie -> termine[iST].start <= systemzeit)
+						{
+							continue;
+						}
+						// Schauen, ob der gefundene Termin noch früher ist.
+						else if(neachster != NULL && aktuelleSerie -> termine[iST].start < neachster -> start)
+						{
+							neachster = &aktuelleSerie -> termine[iST];
+						}
+						else if(neachster == NULL) // es gibt noch keinen Vergleichstermin.
+						{
+							neachster = &aktuelleSerie -> termine[iST];
+						}
+					}
+				}
+
+				if(neachster != NULL) // es gibt einen nächsten Termin
+				{
+					printTerminZeile(neachster);
+				}
+				else // es gibt keinen
+					fputs("Sie haben keinen naechsten Termin!\n", stdout);
 			break;
-			
+			}
 			case 6: // Kalenderausgabe
 				
 			break;
