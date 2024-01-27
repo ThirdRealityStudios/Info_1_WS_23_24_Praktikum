@@ -115,12 +115,11 @@ int size(List *list){
 }
 
 void printList(List *list){
-	
 	if(list == NULL)
 		return;
 	
 	for(int i = 0; i < size(list); i++){
 		Person *current = getElement(list, i) -> value;
-		printf("%s, %s, %d Jahre alt\n", current -> vorname, current -> nachname, current -> alter);
+		printf("(Nr. %d) %s, %s, %d Jahre alt\n", i, current -> vorname, current -> nachname, current -> alter);
 	}
 }
