@@ -110,7 +110,7 @@ void printTermin(Termin *t, FILE *stream)
 		fputs("Keine Personen zugewiesen!\n", stream);
 	else
 	{
-		printList(t -> personen, stdout);
+		printList(t -> personen, stream);
 	}
 	
 	fputs("\n", stream);
